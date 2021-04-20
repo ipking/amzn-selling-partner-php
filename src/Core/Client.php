@@ -177,10 +177,9 @@ abstract class Client{
 			'accept' => 'application/json',
 		], $headers);
 		
-		$request = [];
-		
+		$header_arr = [];
 		foreach($headers as $key => $item){
-			$request[CURLOPT_HTTPHEADER][] = $key.': '.$item;
+			$header_arr[] = $key.': '.$item;
 		}
 		
 		$this->data = $signOptions['payload'];
@@ -195,19 +194,44 @@ abstract class Client{
 		
 		switch($this->method){
 			case self::METHOD_GET:
-				$this->client_response = Curl::get($this->url,$request);
+				$opt = array(
+					CURLOPT_HTTPHEADER     => $header_arr,
+				);
+				$this->client_response = Curl::execute($this->url,$opt);
 				break;
 			case self::METHOD_POST:
-				$this->client_response = Curl::post($this->url, $requestOptions['json'],$request);
+				$data = [];
+				if($requestOptions['json']){
+					$data = json_encode($requestOptions['json']);
+					$header_arr[] = 'Content-Type: application/json';
+				}
+				$opt = array(
+					CURLOPT_POST           => true,
+					CURLOPT_HTTPHEADER     => $header_arr,
+					CURLOPT_POSTFIELDS     => $data,
+				);
+				$this->client_response = Curl::execute($this->url,$opt);
 				break;
 			case self::METHOD_PUT:
-				$this->client_response = Curl::put($this->url, $requestOptions['json'],$request);
+				
+				$data = [];
+				if($requestOptions['json']){
+					$data = json_encode($requestOptions['json']);
+					$header_arr[] = 'Content-Type: application/json';
+				}
+				$opts = array(
+					CURLOPT_HTTPHEADER    => $header_arr,
+					CURLOPT_CUSTOMREQUEST => "PUT",
+					CURLOPT_POSTFIELDS    => $data
+				);
+				$this->client_response = Curl::execute($this->url, $opts);
 				break;
 			case self::METHOD_DELETE:
-				$this->client_response = Curl::del($this->url,$request);
+				$opt = array(
+					CURLOPT_CUSTOMREQUEST => "DELETE",
+				);
+				$this->client_response = Curl::execute($this->url,$opt);
 				break;
-			default:
-				throw new \Exception('method '.$this->method.' not yet supply');
 		}
 		
 		

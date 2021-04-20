@@ -40,14 +40,8 @@ class Feeder
 		    CURLOPT_CUSTOMREQUEST => "PUT",
 		    CURLOPT_POSTFIELDS    => $encryptedFile
 	    );
-	   
-	    $response = Curl::execute($feedUploadUrl,$request);
-       
-        if ($HTTPStatusCode == 200) {
-            return 'Done';
-        } else {
-            return $response->getBody()->getContents();
-        }
+	
+	    return Curl::execute($feedUploadUrl,$request);
     }
 
     /**

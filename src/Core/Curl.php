@@ -64,28 +64,6 @@ abstract class Curl{
 		return $curl;
 	}
 	
-	/**
-	 * CURL-get方式获取数据
-	 * @param string $url URL
-	 * @param array $curl_option
-	 * @throws HttpException
-	 * @return bool|mixed
-	 */
-	public static function get($url, $curl_option = array()){
-		$opt = array(
-			CURLOPT_TIMEOUT => self::DEFAULT_TIMEOUT,
-		);
-		
-		$curl_option = self::arrayMergeKeepKeys($opt, $curl_option);
-		$curl = self::getCurlInstance($url, $curl_option);
-		$content = curl_exec($curl);
-		$curl_errno = curl_errno($curl);
-		if($curl_errno>0){
-			throw new HttpException(curl_error($curl));
-		}
-		curl_close($curl);
-		return $content;
-	}
 	
 	
 	/**
@@ -119,56 +97,6 @@ abstract class Curl{
 		return $content;
 	}
 	
-
-	/**
-	 * CURL-put方式获取数据
-	 * @param string $url URL
-	 * @param array $data POST数据
-	 * @param array $curl_option
-	 * @throws HttpException
-	 * @return bool|mixed
-	 */
-	public static function put($url, $data, $curl_option = array()){
-		$body = json_encode($data);
-		$opts = array(
-			CURLOPT_HTTPHEADER    => array('Content-Type: application/json'),
-			CURLOPT_CUSTOMREQUEST => "PUT",
-			CURLOPT_TIMEOUT       => self::DEFAULT_TIMEOUT,
-			CURLOPT_POSTFIELDS    => $body
-		);
-		$curl_option = self::arrayMergeKeepKeys($opts, $curl_option);
-		$curl = self::getCurlInstance($url, $curl_option);
-		$content = curl_exec($curl);
-		$curl_errno = curl_errno($curl);
-		if($curl_errno>0){
-			throw new HttpException($curl_errno);
-		}
-		curl_close($curl);
-		return $content;
-	}
-	
-	/**
-	 * CURL-DEL方式获取数据
-	 * @param string $url URL
-	 * @param array $curl_option
-	 * @throws HttpException
-	 * @return bool|mixed
-	 */
-	public static function del($url, $curl_option = array()){
-		$opt = array(
-			CURLOPT_CUSTOMREQUEST => "DELETE",
-			CURLOPT_TIMEOUT        => self::DEFAULT_TIMEOUT,
-		);
-		$curl_option = self::arrayMergeKeepKeys($opt, $curl_option);
-		$curl = self::getCurlInstance($url, $curl_option);
-		$content = curl_exec($curl);
-		$curl_errno = curl_errno($curl);
-		if($curl_errno>0){
-			throw new HttpException($curl_errno);
-		}
-		curl_close($curl);
-		return $content;
-	}
 	
 	/**
 	 * 获取数据
