@@ -9,7 +9,7 @@ abstract class Client{
 	const METHOD_PUT = 'PUT';
 	const METHOD_DELETE = 'DELETE';
 	
-	public static $debug = false;
+	protected static $debug = false;
 	
 	protected static $callback;
 	
@@ -38,6 +38,10 @@ abstract class Client{
 	protected $region;
 	protected $host;
 	
+	
+	public static function setDebug(){
+		self::$debug = true;
+	}
 	
 	/**
 	 * @param $cb
@@ -120,7 +124,7 @@ abstract class Client{
 	
 	private function normalizeHeaders($headers)
 	{
-		return $result = array_combine(
+		return array_combine(
 			array_map(function($header) { return strtolower($header); }, array_keys($headers)),
 			$headers
 		);
@@ -132,7 +136,7 @@ abstract class Client{
 	 * @param string $uri
 	 * @param array $requestOptions
 	 * @return array
-	 * @throws HttpException
+	 * @throws HttpException|SignerException
 	 */
 	protected function send($uri, $requestOptions = []){
 		
@@ -161,12 +165,7 @@ abstract class Client{
 			$signOptions['query_string'] =  http_build_query($query);
 			$this->url .= '?'.$signOptions['query_string'];
 		}
-		
-		if (isset($requestOptions['form_params'])) {
-			ksort($requestOptions['form_params']);
-			$signOptions['payload'] = http_build_query($requestOptions['form_params']);
-		}
-		
+	
 		if (isset($requestOptions['json'])) {
 			ksort($requestOptions['json']);
 			$signOptions['payload'] = json_encode($requestOptions['json']);
@@ -196,7 +195,7 @@ abstract class Client{
 		
 		switch($this->method){
 			case self::METHOD_GET:
-				$this->client_response = Curl::get($this->url,$request);
+				$this->client_response = Curl::get($this->url,6);
 				break;
 			case self::METHOD_POST:
 				$this->client_response = Curl::post($this->url, $signOptions['payload'],$request);
