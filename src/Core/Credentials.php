@@ -60,10 +60,17 @@ class Credentials
 	        'method'     => Client::METHOD_POST,
 	        'payload'    => http_build_query($arr_data),
         ]);
-	    $request[CURLOPT_HTTPHEADER] = array_merge([
-		    'accept' => 'application/json'
+	    $headers = array_merge([
+		    'accept' => 'application/json',
+		    'content-type'=> 'application/x-www-form-urlencoded'
 	    ], $headers);
 	
+	    $request = [];
+	    
+	    foreach($headers as $key => $item){
+		    $request[CURLOPT_HTTPHEADER][] = $key.': '.$item;
+	    }
+	    
 	    $response = Curl::postInField('https://'.$host.$uri, $arr_data,$request);
 	
 	    $json = json_decode($response, true);

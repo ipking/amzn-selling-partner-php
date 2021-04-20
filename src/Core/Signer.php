@@ -28,7 +28,7 @@ class Signer {
     //optionl
     $accessToken = $signOptions['access_token'] ?: null;
     $securityToken = $signOptions['security_token'] ?: null;
-    $userAgent = $signOptions['user_agent'] ?: 'spapi_client';
+    $userAgent = $signOptions['user_agent'] ?: 'selling_partner';
     $queryString = $signOptions['query_string'] ?: '';
     $data = $signOptions['payload'] ?: [];
     $uri = $signOptions['uri'] ?: '';
