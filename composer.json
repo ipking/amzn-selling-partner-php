@@ -1,0 +1,22 @@
+{
+    "name": "ipking/amzn-selling-partner-php",
+    "description": "amazon selling partner PHP API.",
+    "type": "library",
+    "license": "Apache-2.0",
+	"homepage": "https://github.com/ipking/amzn-selling-partner-php",
+    "authors": [{
+        "name": "ipking",
+        "email": "667997@gmail.com"
+    }],
+    "require": {
+        "php": ">=5.5.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+	    "ext-fileinfo": "*"
+	},
+    "autoload": {
+        "psr-4": {
+            "SellingPartner\\": "src/"
+        }
+    }
+}
