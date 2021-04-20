@@ -1,0 +1,1 @@
+# amzn-selling-partner-php
