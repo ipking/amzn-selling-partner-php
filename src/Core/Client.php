@@ -195,7 +195,7 @@ abstract class Client{
 		
 		switch($this->method){
 			case self::METHOD_GET:
-				$this->client_response = Curl::get($this->url,6);
+				$this->client_response = Curl::get($this->url,$request);
 				break;
 			case self::METHOD_POST:
 				$this->client_response = Curl::post($this->url, $signOptions['payload'],$request);
