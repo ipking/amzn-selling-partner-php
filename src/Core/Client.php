@@ -183,7 +183,7 @@ abstract class Client{
 			$request[CURLOPT_HTTPHEADER][] = $key.': '.$item;
 		}
 		
-		$this->data = json_encode($signOptions['payload']);
+		$this->data = $signOptions['payload'];
 		
 		
 		if(self::$debug){
@@ -198,10 +198,10 @@ abstract class Client{
 				$this->client_response = Curl::get($this->url,$request);
 				break;
 			case self::METHOD_POST:
-				$this->client_response = Curl::post($this->url, $signOptions['payload'],$request);
+				$this->client_response = Curl::post($this->url, $requestOptions['json'],$request);
 				break;
 			case self::METHOD_PUT:
-				$this->client_response = Curl::put($this->url, $signOptions['payload'],$request);
+				$this->client_response = Curl::put($this->url, $requestOptions['json'],$request);
 				break;
 			case self::METHOD_DELETE:
 				$this->client_response = Curl::del($this->url,$request);
@@ -221,6 +221,6 @@ abstract class Client{
 			$callback = self::$callback;
 			$callback($this);
 		}
-		return \json_decode($this->client_response, true);
+		return json_decode($this->client_response, true);
 	}
 }

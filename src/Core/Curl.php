@@ -169,4 +169,22 @@ abstract class Curl{
 		curl_close($curl);
 		return $content;
 	}
+	
+	/**
+	 * 获取数据
+	 * @param string $url URL
+	 * @param array $curl_option
+	 * @throws HttpException
+	 * @return bool|mixed
+	 */
+	public static function execute($url, $curl_option = array()){
+		$curl = self::getCurlInstance($url, $curl_option);
+		$content = curl_exec($curl);
+		$curl_errno = curl_errno($curl);
+		if($curl_errno>0){
+			throw new HttpException($curl_errno);
+		}
+		curl_close($curl);
+		return $content;
+	}
 }
