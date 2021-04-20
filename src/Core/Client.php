@@ -16,12 +16,7 @@ abstract class Client{
 	/**
 	 * 请求方式
 	 */
-	protected $method = self::METHOD_GET;
-	
-	/**
-	 * curl option
-	 */
-	protected $curl_option = array();
+	protected $method;
 	
 	/**
 	 * 请求地址
@@ -33,23 +28,16 @@ abstract class Client{
 	protected $data;
 	
 	
-	protected $param;
-	
 	
 	protected $client_response;
 	
-	/**
-	 * 通过OAuth授权方式获得
-	 */
 	protected $access_token;
-
+	protected $sts_access_key;
+	protected $sts_secret_key;
+	protected $sts_session_token;
+	protected $region;
+	protected $host;
 	
-	/**
-	 * @param $access_token
-	 */
-	public function setAccessToken($access_token){
-		$this->access_token = $access_token;
-	}
 	
 	/**
 	 * @param $cb
@@ -58,13 +46,6 @@ abstract class Client{
 		self::$callback = $cb;
 	}
 	
-	
-	/**
-	 * @return array
-	 */
-	public function getParam(){
-		return $this->param;
-	}
 	
 	/**
 	 * @return string
@@ -96,13 +77,114 @@ abstract class Client{
 	
 	
 	/**
+	 * @param $access_token
+	 */
+	public function setAccessToken($access_token){
+		$this->access_token = $access_token;
+	}
+	
+	/**
+	 * @param $sts_access_key
+	 */
+	public function setStsAccessKey($sts_access_key){
+		$this->sts_access_key = $sts_access_key;
+	}
+	
+	/**
+	 * @param $sts_secret_key
+	 */
+	public function setStsSecretKey($sts_secret_key){
+		$this->sts_secret_key = $sts_secret_key;
+	}
+	
+	/**
+	 * @param $sts_session_token
+	 */
+	public function setStsSessionToken($sts_session_token){
+		$this->sts_session_token = $sts_session_token;
+	}
+	
+	/**
+	 * @param $region
+	 */
+	public function setRegion($region){
+		$this->region = $region;
+	}
+	
+	/**
+	 * @param $host
+	 */
+	public function setHost($host){
+		$this->host = $host;
+	}
+	
+	private function normalizeHeaders($headers)
+	{
+		return $result = array_combine(
+			array_map(function($header) { return strtolower($header); }, array_keys($headers)),
+			$headers
+		);
+		
+	}
+	
+	/**
 	 * 发送数据
-	 * @param array $arr_data
+	 * @param string $uri
+	 * @param array $requestOptions
 	 * @return array
 	 * @throws HttpException
 	 */
-	protected function sendData($arr_data){
-		$this->data = json_encode($arr_data);
+	protected function send($uri, $requestOptions = []){
+		
+		$this->method = $requestOptions['method'];
+		$this->url = 'https://' . $this->host.$uri;
+		
+		$requestOptions['headers'] = $requestOptions['headers'] ?: [];
+		$requestOptions['headers'] = $this->normalizeHeaders($requestOptions['headers']);
+		
+		
+		$signOptions = [
+			'service'        => 'execute-api',
+			'access_token'   => $this->access_token,
+			'access_key'     => $this->sts_access_key,
+			'secret_key'     => $this->sts_secret_key,
+			'security_token' => $this->sts_session_token,
+			'region'         => $this->region,
+			'host'           => $this->host,
+			'uri'            => $uri,
+			'method'         => $this->method
+		];
+		
+		if (isset($requestOptions['query'])) {
+			$query = $requestOptions['query'];
+			ksort($query);
+			$signOptions['query_string'] =  http_build_query($query);
+			$this->url .= '?'.$signOptions['query_string'];
+		}
+		
+		if (isset($requestOptions['form_params'])) {
+			ksort($requestOptions['form_params']);
+			$signOptions['payload'] = http_build_query($requestOptions['form_params']);
+		}
+		
+		if (isset($requestOptions['json'])) {
+			ksort($requestOptions['json']);
+			$signOptions['payload'] = json_encode($requestOptions['json']);
+		}
+		
+		
+		$headers = Signer::sign($signOptions);
+		$headers = array_merge([
+			'accept' => 'application/json',
+		], $headers);
+		
+		$request = [];
+		
+		foreach($headers as $key => $item){
+			$request[CURLOPT_HTTPHEADER][] = $key.': '.$item;
+		}
+		
+		$this->data = json_encode($signOptions['payload']);
 		
 		
 		if(self::$debug){
@@ -112,29 +194,21 @@ abstract class Client{
 			echo "\n+++++++++++++++++ REQ +++++++++++++++\n";
 		}
 		
-		try{
-			$curl_option= $this->curl_option;
-			
-			$timeout = Curl::DEFAULT_TIMEOUT;
-			switch($this->method){
-				case self::METHOD_GET:
-					$this->client_response = Curl::get($this->url,$timeout,$curl_option);
-					break;
-				case self::METHOD_POST:
-					$this->client_response = Curl::postInJson($this->url, $arr_data,$timeout,$curl_option);
-					break;
-				case self::METHOD_PUT:
-					$this->client_response = Curl::put($this->url, $arr_data,$timeout,$curl_option);
-					break;
-				case self::METHOD_DELETE:
-					$this->client_response = Curl::del($this->url,$timeout,$curl_option);
-					break;
-				default:
-					throw new \Exception('method '.$this->method.' not yet supply');
-					break;
-			}
-		}catch(\Exception $e){
-			return ['error'=>1,'message'=>$e->getMessage()];
+		switch($this->method){
+			case self::METHOD_GET:
+				$this->client_response = Curl::get($this->url,$request);
+				break;
+			case self::METHOD_POST:
+				$this->client_response = Curl::post($this->url, $signOptions['payload'],$request);
+				break;
+			case self::METHOD_PUT:
+				$this->client_response = Curl::put($this->url, $signOptions['payload'],$request);
+				break;
+			case self::METHOD_DELETE:
+				$this->client_response = Curl::del($this->url,$request);
+				break;
+			default:
+				throw new \Exception('method '.$this->method.' not yet supply');
 		}
 		
 		
