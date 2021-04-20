@@ -13,21 +13,11 @@ abstract class Client{
 	
 	protected static $callback;
 	
-	/**
-	 * 请求方式
-	 */
 	protected $method;
 	
-	/**
-	 * 请求地址
-	 */
 	protected $url;
-	/**
-	 * 请求数据
-	 */
+	
 	protected $data;
-	
-	
 	
 	protected $client_response;
 	
@@ -132,7 +122,6 @@ abstract class Client{
 	}
 	
 	/**
-	 * 发送数据
 	 * @param string $uri
 	 * @param array $requestOptions
 	 * @return array

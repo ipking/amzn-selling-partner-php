@@ -3,8 +3,6 @@
 
 namespace SellingPartner\Helper;
 
-
-
 use SellingPartner\Core\ASECryptoStream;
 use SellingPartner\Core\Curl;
 

@@ -3,14 +3,10 @@
 namespace SellingPartner\Core;
 
 
-/**
- * HTTP请求基类
- */
 abstract class Curl{
 	const DEFAULT_TIMEOUT = 30;
 	
 	/**
-	 * 合并保留关键字
 	 * @return mixed
 	 */
 	private static function arrayMergeKeepKeys(){
@@ -25,7 +21,6 @@ abstract class Curl{
 	}
 	
 	/**
-	 * 获取CURL实例
 	 * @param $url
 	 * @param array $curl_option
 	 * @throws HttpException
@@ -45,8 +40,8 @@ abstract class Curl{
 		);
 		
 		if($ssl){
-			$opt[CURLOPT_SSL_VERIFYPEER] = 0;                       //对认证证书来源的检查
-			$opt[CURLOPT_SSL_VERIFYHOST] = 1;                       //从证书中检查SSL加密算法是否存在
+			$opt[CURLOPT_SSL_VERIFYPEER] = 0;
+			$opt[CURLOPT_SSL_VERIFYHOST] = 1;
 		}
 		
 		//设置缺省参数
@@ -67,9 +62,8 @@ abstract class Curl{
 	
 	
 	/**
-	 * CURL-post方式获取数据
-	 * @param string $url URL
-	 * @param mixed $data POST数据
+	 * @param string $url
+	 * @param mixed $data
 	 * @param array $curl_option
 	 * @throws HttpException
 	 * @return bool|mixed
@@ -99,8 +93,7 @@ abstract class Curl{
 	
 	
 	/**
-	 * 获取数据
-	 * @param string $url URL
+	 * @param string $url
 	 * @param array $curl_option
 	 * @throws HttpException
 	 * @return bool|mixed
