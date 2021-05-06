@@ -69,7 +69,29 @@ class Country{
 		'SG' => 'us-west-2',
 		'AU' => 'us-west-2',
 		'JP' => 'us-west-2',
+	];
 	
+	public static $authUri = [
+		'CA' => 'https://sellercentral.amazon.ca',
+		'US' => 'https://sellercentral.amazon.com',
+		'MX' => 'https://sellercentral.amazon.com.mx',
+		'BR' => 'https://sellercentral.amazon.com.br',
+		
+		'ES' => 'https://sellercentral.amazon.es',
+		'GB' => 'https://sellercentral.amazon.co.uk',
+		'FR' => 'https://sellercentral.amazon.fr',
+		'NL' => 'https://sellercentral.amazon.nl',
+		'DE' => 'https://sellercentral.amazon.de',
+		'IT' => 'https://sellercentral.amazon.it',
+		'SE' => 'https://sellercentral.amazon.se',
+		'PL' => 'https://sellercentral.amazon.pl',
+		'TR' => 'https://sellercentral.amazon.com.tr',
+		'AE' => 'https://sellercentral.amazon.ae',
+		'IN' => 'https://sellercentral.amazon.in',
+		
+		'SG' => 'https://sellercentral.amazon.sg',
+		'AU' => 'https://sellercentral.amazon.com.au',
+		'JP' => 'https://sellercentral.amazon.co.jp',
 	];
 }
 
