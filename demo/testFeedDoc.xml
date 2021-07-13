@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AmazonEnvelope xsi:noNamespaceSchemaLocation="amzn-envelope.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Header>
+        <DocumentVersion>1.01</DocumentVersion>
+        <MerchantIdentifier>A2L0**********</MerchantIdentifier>
+    </Header>
+    <MessageType>OrderFulfillment</MessageType>
+    <Message>
+        <MessageID>1</MessageID>
+        <OperationType>Update</OperationType>
+        <OrderFulfillment>
+            <AmazonOrderId>405-*******-*******</AmazonOrderId>
+            <FulfillmentDate>2021-02-02T10:40:00</FulfillmentDate>
+            <FulfillmentData>
+                <CarrierName>Post NL</CarrierName>
+                <ShippingMethod>Standard</ShippingMethod>
+                <ShipperTrackingNumber>3SYUDM********</ShipperTrackingNumber>
+            </FulfillmentData>
+            <Item>
+                <AmazonOrderItemCode>0232392*******</AmazonOrderItemCode>
+                <Quantity>1</Quantity>
+            </Item>
+        </OrderFulfillment>
+    </Message>
+</AmazonEnvelope>

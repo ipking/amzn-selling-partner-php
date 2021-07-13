@@ -10,6 +10,8 @@
     }],
     "require": {
         "php": ">=5.5.0",
+        "ext-simplexml": "*",
+        "ext-zlib": "*",
         "ext-curl": "*",
         "ext-json": "*",
 	    "ext-fileinfo": "*"

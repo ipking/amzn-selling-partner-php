@@ -1,10 +1,8 @@
 <?php
 
-use SellingPartner\Core\Credentials;
-
 include '.config.php';
 
-$cred = new Credentials($options);
+$cred = new \SellingPartner\Core\Credentials($options);
 
 $tokens = $cred->getStsTokens();
 

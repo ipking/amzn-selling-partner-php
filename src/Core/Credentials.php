@@ -26,7 +26,7 @@ class Credentials
 		    'client_id'     => $this->config['client_id'],
 		    'client_secret' => $this->config['client_secret']
 	    ];
-	    $response = Curl::postInField(self::URI_API, $arr_data);
+	    $response = Curl::post(self::URI_API, $arr_data);
         $json = json_decode($response, true);
         return $json['access_token'];
     }
@@ -60,30 +60,34 @@ class Credentials
 	        'method'     => Client::METHOD_POST,
 	        'payload'    => http_build_query($arr_data),
         ]);
-	    $request[CURLOPT_HTTPHEADER] = array_merge([
-		    'accept' => 'application/json'
+	    $headers = array_merge([
+		    'accept' => 'application/json',
 	    ], $headers);
 	
-	    $response = Curl::postInField('https://'.$host.$uri, $arr_data,$request);
+	    $request = [];
+	    
+	    foreach($headers as $key => $item){
+		    $request[CURLOPT_HTTPHEADER][] = $key.': '.$item;
+	    }
+	    
+	    $response = Curl::post('https://'.$host.$uri, $arr_data,$request);
 	
 	    $json = json_decode($response, true);
 	    $credentials = $json['AssumeRoleResponse']['AssumeRoleResult']['Credentials'] ?: null;
-	    $tokens = [
+	
+	    return [
 		    'access_key'    => $credentials['AccessKeyId'],
 		    'secret_key'    => $credentials['SecretAccessKey'],
 		    'session_token' => $credentials['SessionToken']
 	    ];
-	
-	    return $tokens;
-
     }
 	
 	/**
-	 * @param $authorizationCode
+	 * @param string $authorizationCode
 	 * @return string
 	 * @throws \SellingPartner\Core\HttpException
 	 */
-    public function getRefreshTokenByAuthorizationCode($authorizationCode)
+    public function getRefreshToken($authorizationCode)
     {
 	    $arr_data = [
 		    'grant_type'    => 'authorization_code',
@@ -91,7 +95,7 @@ class Credentials
 		    'client_id'     => $this->config['client_id'],
 		    'client_secret' => $this->config['client_secret']
 	    ];
-	    $response = Curl::postInField(self::URI_API, $arr_data);
+	    $response = Curl::post(self::URI_API, $arr_data);
 	    $json = json_decode($response, true);
 	    return $json['refresh_token'];
     }

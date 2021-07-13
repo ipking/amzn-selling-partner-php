@@ -1,10 +1,9 @@
 <?php
 
-use SellingPartner\Core\Credentials;
 
 include '.config.php';
 
-$cred = new Credentials($options);
+$cred = new \SellingPartner\Core\Credentials($options);
 
 $access_token = $cred->getLWAToken();
 
