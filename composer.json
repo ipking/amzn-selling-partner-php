@@ -14,7 +14,8 @@
         "ext-zlib": "*",
         "ext-curl": "*",
         "ext-json": "*",
-	    "ext-fileinfo": "*"
+	    "ext-fileinfo": "*",
+	    "ext-mbstring": "*"
 	},
     "autoload": {
         "psr-4": {

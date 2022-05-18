@@ -100,9 +100,13 @@ abstract class Curl{
 	 * @param string $url
 	 * @param array $curl_option
 	 * @throws HttpException
-	 * @return bool|mixed
+	 * @return array
 	 */
 	public static function execute($url, $curl_option = array()){
+		$opt = array(
+			CURLOPT_HEADER         => true,
+		);
+		$curl_option = self::arrayMergeKeepKeys($opt, $curl_option);
 		$curl = self::getCurlInstance($url, $curl_option);
 		$content = curl_exec($curl);
 		
@@ -119,7 +123,24 @@ abstract class Curl{
 		if($curl_errno>0){
 			throw new HttpException($curl_errno);
 		}
+		
+		$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+		$response_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		
+		$response_headers = substr($content, 0, $header_size);
+		// Parse out the headers
+		$response_headers = explode("\r\n\r\n", trim($response_headers));
+		$response_headers = array_pop($response_headers);
+		$response_headers = explode("\r\n", $response_headers);
+		array_shift($response_headers);
+		// Loop through and split up the headers.
+		$header_assoc = array();
+		foreach ($response_headers as $header) {
+			$kv = explode(': ', $header);
+			$header_assoc[strtolower($kv[0])] = isset($kv[1]) ? $kv[1] : '';
+		}
+		$response_body = substr($content, $header_size);
 		curl_close($curl);
-		return $content;
+		return [$response_body,$response_code,$header_assoc];
 	}
 }

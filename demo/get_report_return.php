@@ -26,7 +26,7 @@ $response = $feedClient->createReport([
 ]);
 while(1){
 	sleep(1);
-	$response = $feedClient->getReport($response['payload']['reportId']);
+	$response = $feedClient->getReport($response['reportId']);
 	
 	if(strtoupper($response['processingStatus']) == 'DONE'){
 		break;

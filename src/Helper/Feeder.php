@@ -10,7 +10,7 @@ class Feeder
      * @param $payload : Response from createFeedDocument Function. e.g.: response['payload']
      * @param $contentType : Content type used during createFeedDocument function call.
      * @param $feedContent : Content that contain data to be uploaded.
-     * @return string
+     * @return array
      * @throws \Exception
      */
     public function uploadFeedDocument($payload, $contentType, $feedContent)

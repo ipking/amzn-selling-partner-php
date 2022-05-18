@@ -234,6 +234,7 @@ abstract class Client{
 			$callback = self::$callback;
 			$callback($this);
 		}
-		return json_decode($this->client_response, true);
+		list($response_body,$response_code,$response_headers) = $this->client_response;
+		return json_decode($response_body, true);
 	}
 }
