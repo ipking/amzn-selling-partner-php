@@ -11,7 +11,7 @@ abstract class Client{
 	
 	protected static $debug = false;
 	
-	protected static $callback;
+	protected static $callback_list;
 	
 	protected $method;
 	
@@ -37,7 +37,7 @@ abstract class Client{
 	 * @param $cb
 	 */
 	public static function setSendCallback($cb){
-		self::$callback = $cb;
+		self::$callback_list[] = $cb;
 	}
 	
 	
@@ -230,10 +230,14 @@ abstract class Client{
 			echo "\n=============== RSP ================\n";
 		}
 		
-		if(is_callable(self::$callback)){
-			$callback = self::$callback;
-			$callback($this);
+		if(is_array(self::$callback_list)){
+			foreach(self::$callback_list as $cb){
+				if(is_callable($cb)){
+					$cb($this);
+				}
+			}
 		}
+		
 		list($response_body,$response_code,$response_headers) = $this->client_response;
 		return json_decode($response_body, true);
 	}
